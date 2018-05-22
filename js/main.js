@@ -7,6 +7,8 @@ import DataBus from './databus'
 
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
+//fire a bullet every 20 frames. The smaller this value, the faster player shoots.
+let fireInterval = 20
 
 /**
  * 游戏主函数

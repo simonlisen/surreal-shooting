@@ -4,8 +4,8 @@ const screenWidth  = window.innerWidth
 const screenHeight = window.innerHeight
 
 const BG_IMG_SRC   = 'images/bg.jpg'
-const BG_WIDTH     = 400
-const BG_HEIGHT    = 300
+const BG_WIDTH     = 512
+const BG_HEIGHT    = 910
 
 /**
  * 游戏背景类
