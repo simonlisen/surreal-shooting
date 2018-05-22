@@ -1,7 +1,7 @@
 import Animation from '../base/animation'
 import DataBus   from '../databus'
 
-let ENEMY_IMG_SRC = 'images/enemy.png'
+const ENEMY_IMG_SRC = 'images/enemy.png'
 const ENEMY_WIDTH   = 60
 const ENEMY_HEIGHT  = 60
 
@@ -16,14 +16,9 @@ function rnd(start, end){
 }
 
 export default class Enemy extends Animation {
-  // constructor() {
-  //   super(ENEMY_IMG_SRC, ENEMY_WIDTH, ENEMY_HEIGHT)
+  constructor() {
+    super(ENEMY_IMG_SRC, ENEMY_WIDTH, ENEMY_HEIGHT)
 
-  //   this.initExplosionAnimation()
-  // }
-
-  constructor(src, width, height) {
-    super(src, width, height)
     this.initExplosionAnimation()
   }
 
@@ -50,7 +45,7 @@ export default class Enemy extends Animation {
     this.initFrames(frames)
   }
 
-  // 每一帧更新敌机位置
+  // 每一帧更新子弹位置
   update() {
     this.y += this[__.speed]
 
