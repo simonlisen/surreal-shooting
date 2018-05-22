@@ -36,6 +36,20 @@ export default class Pool {
   }
 
   /**
+ * create an item based on:
+ * name / class name / image source / item width, item height
+ */
+  createItem(name, className, src, width, height) {
+    let pool = this.getPoolBySign(name)
+
+    let result = (pool.length
+      ? pool.shift()
+      : new className(src, width, height))
+
+    return result
+  }
+
+  /**
    * 将对象回收到对象池
    * 方便后续继续使用
    */

@@ -56,6 +56,20 @@ export default class Main {
     }
   }
 
+  /**
+   * 随着帧数变化的敌机生成逻辑
+   * 帧数取模定义成生成的频率
+   */
+  enemyGenerate(quantity) {
+    if (databus.frame % 30 === 0) {
+    let enemy = databus.pool.createItem('enemy', Enemy, 'images/ghost_1.png', 60, 60) //getItemByClass('enemy', Enemy)
+      enemy.init(6)
+      for (let i = 0; i < 3; i++) {//quantity
+        databus.enemys.push(enemy)
+      }
+    }
+  }
+
   // 全局碰撞检测
   collisionDetection() {
     let that = this
@@ -153,7 +167,8 @@ export default class Main {
         item.update()
       })
 
-    this.enemyGenerate()
+    //this.enemyGenerate()
+    this.enemyGenerate(1)
 
     this.collisionDetection()
 
