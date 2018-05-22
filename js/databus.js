@@ -22,6 +22,7 @@ export default class DataBus {
     this.score      = 0
     this.bullets    = []
     this.enemys     = []
+    this.trophies   = []
     this.animations = []
     this.gameOver   = false
   }
@@ -32,10 +33,14 @@ export default class DataBus {
    */
   removeEnemey(enemy) {
     let temp = this.enemys.shift()
-
     temp.visible = false
-
     this.pool.recover('enemy', enemy)
+  }
+
+  removeTrophy(tp) {
+    let temp = this.trophies.shift()
+    temp.visible = false
+    this.pool.recover('trophy', tp)
   }
 
   /**

@@ -1,5 +1,6 @@
 import Player from './player/index'
 import Enemy from './npc/enemy'
+import Trophy from './npc/trophy'
 import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
@@ -7,8 +8,12 @@ import DataBus from './databus'
 
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
-//fire a bullet every 20 frames. The smaller this value, the faster player shoots.
-let fireInterval = 20
+//fire a bullet every 50 frames. The smaller this value, the faster player shoots.
+var fireInterval = 50
+//every blue gem increase atk spd by 20%.
+const FIRE_INTERVAL_REDUCTION = 0.2
+//minimum fire interval is 1 shot per 10 frames.
+const MIN_FIRE_INTERVAL = 10
 
 /**
  * 游戏主函数
@@ -58,10 +63,23 @@ export default class Main {
     }
   }
 
+  /**
+   * 随着帧数变化的战利品生成逻辑
+   * 帧数取模定义成生成的频率
+   */
+  trophyGenerate() {
+    if (databus.frame % 200 === 0) {
+      let tp = databus.pool.getItemByClass('trophy', Trophy)
+      tp.init(5)
+      databus.trophies.push(tp)
+    }
+  }
+
   // 全局碰撞检测
   collisionDetection() {
     let that = this
-
+    
+    //detect bullet - enemy collision
     databus.bullets.forEach((bullet) => {
       for (let i = 0, il = databus.enemys.length; i < il; i++) {
         let enemy = databus.enemys[i]
@@ -77,13 +95,28 @@ export default class Main {
         }
       }
     })
-
+    
+    //detect player - enemy collision
     for (let i = 0, il = databus.enemys.length; i < il; i++) {
       let enemy = databus.enemys[i]
 
       if (this.player.isCollideWith(enemy)) {
         databus.gameOver = true
 
+        break
+      }
+    }
+    
+    //detect player - trophy collision
+    for (let i = 0, il = databus.trophies.length; i < il; i++) {
+      let tp = databus.trophies[i]
+      let division = 1 + FIRE_INTERVAL_REDUCTION
+      if (this.player.isCollideWith(tp)) {
+        //reduce fire interval  - MIN_FIRE_INTERVAL
+        if (parseInt (fireInterval / division) > MIN_FIRE_INTERVAL){
+          fireInterval = parseInt(fireInterval / division) 
+        }        
+        databus.removeTrophy(tp)
         break
       }
     }
@@ -116,6 +149,7 @@ export default class Main {
 
     databus.bullets
       .concat(databus.enemys)
+      .concat(databus.trophies)
       .forEach((item) => {
         item.drawToCanvas(ctx)
       })
@@ -129,6 +163,7 @@ export default class Main {
     })
 
     this.gameinfo.renderGameScore(ctx, databus.score)
+    this.gameinfo.renderFireInterval(ctx, fireInterval)
 
     // 游戏结束停止帧循环
     if (databus.gameOver) {
@@ -143,6 +178,7 @@ export default class Main {
   }
 
   // 游戏逻辑更新主函数
+  //execute update() every other frame;
   update() {
     if (databus.gameOver)
       return;
@@ -151,15 +187,18 @@ export default class Main {
 
     databus.bullets
       .concat(databus.enemys)
+      .concat(databus.trophies)
       .forEach((item) => {
         item.update()
       })
 
     this.enemyGenerate()
+    this.trophyGenerate()
 
     this.collisionDetection()
 
-    if (databus.frame % 20 === 0) {
+    if (databus.frame % fireInterval === 0) {
+      //debugger;
       this.player.shoot()
       this.music.playShoot()
     }

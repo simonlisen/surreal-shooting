@@ -10,9 +10,20 @@ export default class GameInfo {
     ctx.font      = "20px Arial"
 
     ctx.fillText(
-      score,
+      'Score: ' + score,
       10,
       30
+    )
+  }
+
+  renderFireInterval(ctx, fi) {
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "20px Arial"
+
+    ctx.fillText(
+      'Fire Interval: ' + fi,
+      10,
+      60
     )
   }
 
