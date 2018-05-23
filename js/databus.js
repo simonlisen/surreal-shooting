@@ -20,6 +20,7 @@ export default class DataBus {
   reset() {
     this.frame      = 0
     this.score      = 0
+   // this.fireInterval = 0
     this.bullets    = []
     this.enemys     = []
     this.trophies   = []

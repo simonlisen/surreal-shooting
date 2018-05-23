@@ -8,12 +8,14 @@ import DataBus from './databus'
 
 let ctx = canvas.getContext('2d')
 let databus = new DataBus()
-//fire a bullet every 50 frames. The smaller this value, the faster player shoots.
-var fireInterval = 50
+
 //every blue gem increase atk spd by 20%.
 const FIRE_INTERVAL_REDUCTION = 0.2
 //minimum fire interval is 1 shot per 10 frames.
-const MIN_FIRE_INTERVAL = 10
+const MIN_FIRE_INTERVAL = 8
+const DEFAULT_FIRE_INTERVAL = 50
+//fire a bullet every 50 frames. The smaller this value, the faster player shoots.
+var fireInterval = DEFAULT_FIRE_INTERVAL
 
 /**
  * 游戏主函数
@@ -38,6 +40,8 @@ export default class Main {
     this.player = new Player(ctx)
     this.gameinfo = new GameInfo()
     this.music = new Music()
+
+    fireInterval = DEFAULT_FIRE_INTERVAL
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
