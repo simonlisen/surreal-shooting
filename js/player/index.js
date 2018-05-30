@@ -112,7 +112,7 @@ export default class Player extends Sprite {
    * 玩家射击操作
    * 射击时机由外部决定
    */
-  shoot() {
+  shoot(level = 0) {
     let bullet = databus.pool.getItemByClass('bullet', Bullet)
 
     bullet.init(
@@ -121,6 +121,60 @@ export default class Player extends Sprite {
       10
     )
 
-    databus.bullets.push(bullet)
+    databus.bullets.push(bullet)   
+  }
+
+  shootSpread(level){
+    let bullet = databus.pool.getItemByClass('bullet', Bullet)
+
+    bullet.init(
+      this.x + this.width / 2 - bullet.width / 2,
+      this.y - 10,
+      10
+    )
+
+    databus.bullets.push(bullet)   
+
+    // //if level 1, push 2 side bullets
+    if(level >= 1){
+      let bullet_1 = databus.pool.getItemByClass('bullet', Bullet)
+      bullet_1.init(
+        this.x + this.width / 2 - bullet.width / 2,
+        this.y - 10,
+        10, 2
+      )
+
+      databus.bullets.push(bullet_1)
+
+      let bullet_2 = databus.pool.getItemByClass('bullet', Bullet)
+      bullet_2.init(
+        this.x + this.width / 2 - bullet.width / 2,
+        this.y - 10,
+        10, -2
+      )
+
+      databus.bullets.push(bullet_2)
+    }
+
+    // //if level 2, push 2 more side bullets
+    if (level >= 2) {
+      let bullet_3 = databus.pool.getItemByClass('bullet', Bullet)
+      bullet_3.init(
+        this.x + this.width / 2 - bullet.width / 2,
+        this.y - 10,
+        10, 4
+      )
+
+      databus.bullets.push(bullet_3)
+
+      let bullet_4 = databus.pool.getItemByClass('bullet', Bullet)
+      bullet_4.init(
+        this.x + this.width / 2 - bullet.width / 2,
+        this.y - 10,
+        10, -4
+      )
+
+      databus.bullets.push(bullet_4)
+    }
   }
 }

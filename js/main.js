@@ -16,6 +16,9 @@ const MIN_FIRE_INTERVAL = 8
 const DEFAULT_FIRE_INTERVAL = 50
 //fire a bullet every 50 frames. The smaller this value, the faster player shoots.
 var fireInterval = DEFAULT_FIRE_INTERVAL
+//the level of your weapon
+var weaponLevel = 0
+var weaponCode = 'DEF'
 
 /**
  * 游戏主函数
@@ -202,9 +205,16 @@ export default class Main {
     this.collisionDetection()
 
     if (databus.frame % fireInterval === 0) {
-      //debugger;
-      this.player.shoot()
-      this.music.playShoot()
+      //shoot bullets
+      switch (weaponCode){
+        case 'SPD':
+          this.player.shootSpread(weaponLevel)
+          this.music.playShoot()
+          break;
+        default://'DEF'
+          this.player.shoot(weaponLevel)
+          this.music.playShoot()
+      }      
     }
   }
 

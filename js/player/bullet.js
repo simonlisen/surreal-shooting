@@ -6,7 +6,8 @@ const BULLET_WIDTH   = 16
 const BULLET_HEIGHT  = 30
 
 const __ = {
-  speed: Symbol('speed')
+  speed: Symbol('speed'),
+  x_speed: 0
 }
 
 let databus = new DataBus()
@@ -16,11 +17,12 @@ export default class Bullet extends Sprite {
     super(BULLET_IMG_SRC, BULLET_WIDTH, BULLET_HEIGHT)
   }
 
-  init(x, y, speed) {
+  init(x, y, y_speed, x_speed = 0 ) {
     this.x = x
     this.y = y
 
-    this[__.speed] = speed
+    this[__.speed] = y_speed
+    this[__.x_speed] = x_speed
 
     this.visible = true
   }
@@ -28,6 +30,9 @@ export default class Bullet extends Sprite {
   // 每一帧更新子弹位置
   update() {
     this.y -= this[__.speed]
+    if (this[__.x_speed] !=0){
+      this.x += this[__.x_speed]
+    }
 
     // 超出屏幕外回收自身
     if ( this.y < -this.height )
