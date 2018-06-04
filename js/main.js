@@ -1,6 +1,8 @@
 import Player from './player/index'
 import Enemy from './npc/enemy'
 import Trophy from './npc/trophy'
+import WeaponPart from './npc/weaponpart'
+import StartScreen from './runtime/startscreen'
 import BackGround from './runtime/background'
 import GameInfo from './runtime/gameinfo'
 import Music from './runtime/music'
@@ -27,13 +29,20 @@ export default class Main {
   constructor() {
     // 维护当前requestAnimationFrame的id
     this.aniId = 0
+    //this.restart()
+    this.showStartScreen()
+  }
 
-    this.restart()
+  showStartScreen(){
+  
+    this.ss = new StartScreen(ctx) 
+    this.touchHandler = this.touchEventHandlerOnStartScreen.bind(this)
+    canvas.addEventListener('touchstart', this.touchHandler)  
   }
 
   restart() {
     databus.reset()
-
+   // canvas.removeEventListener('touchstart', this.touchHandler) 
     canvas.removeEventListener(
       'touchstart',
       this.touchHandler
@@ -45,6 +54,8 @@ export default class Main {
     this.music = new Music()
 
     fireInterval = DEFAULT_FIRE_INTERVAL
+    weaponLevel = 0
+    weaponCode = 'DEF'
 
     this.bindLoop = this.loop.bind(this)
     this.hasEventBind = false
@@ -76,6 +87,26 @@ export default class Main {
    */
   trophyGenerate() {
     if (databus.frame % 200 === 0) {
+      let tp = databus.pool.getItemByClass('trophy', Trophy)
+      tp.init(5)
+      databus.trophies.push(tp)
+    }
+  }
+
+  weaponPartGenerate() {
+    if (databus.frame % 499 === 0) {
+      let wp = databus.pool.getItemByClass('weaponpart', WeaponPart)
+      wp.init(5)
+      databus.weaponparts.push(wp)
+    }
+  }
+
+  /**
+   * 随着帧数变化的战利品生成逻辑
+   * 帧数取模定义成生成的频率
+   */
+  trophyGenerate() {
+    if (databus.frame % 179 === 0) {
       let tp = databus.pool.getItemByClass('trophy', Trophy)
       tp.init(5)
       databus.trophies.push(tp)
@@ -127,6 +158,24 @@ export default class Main {
         break
       }
     }
+
+    //detect player - weapon part collision
+    for (let i = 0, il = databus.weaponparts.length; i < il; i++) {
+      let wp = databus.weaponparts[i]
+      //let division = 1 + FIRE_INTERVAL_REDUCTION
+      if (this.player.isCollideWith(wp)) {
+        //reduce fire interval  - MIN_FIRE_INTERVAL
+        if (weaponCode != 'SPD'){
+          weaponCode = 'SPD'
+        }
+        else{
+          weaponLevel += 1
+        }     
+        
+        databus.removeWeaponPart(wp)
+        break
+      }
+    }
   }
 
   // 游戏结束后的触摸事件处理逻辑
@@ -145,6 +194,13 @@ export default class Main {
       this.restart()
   }
 
+  // 游戏开始屏幕触摸事件处理逻辑
+  touchEventHandlerOnStartScreen(e) {
+    console.log('event handler on start')
+    e.preventDefault()  
+      this.restart()
+  }
+
   /**
    * canvas重绘函数
    * 每一帧重新绘制所有的需要展示的元素
@@ -157,6 +213,7 @@ export default class Main {
     databus.bullets
       .concat(databus.enemys)
       .concat(databus.trophies)
+      .concat(databus.weaponparts)
       .forEach((item) => {
         item.drawToCanvas(ctx)
       })
@@ -195,12 +252,14 @@ export default class Main {
     databus.bullets
       .concat(databus.enemys)
       .concat(databus.trophies)
+      .concat(databus.weaponparts)
       .forEach((item) => {
         item.update()
       })
 
     this.enemyGenerate()
     this.trophyGenerate()
+    this.weaponPartGenerate()
 
     this.collisionDetection()
 
@@ -208,9 +267,10 @@ export default class Main {
       //shoot bullets
       switch (weaponCode){
         case 'SPD':
+          //this.player.shoot(weaponLevel)
           this.player.shootSpread(weaponLevel)
           this.music.playShoot()
-          break;
+          break
         default://'DEF'
           this.player.shoot(weaponLevel)
           this.music.playShoot()

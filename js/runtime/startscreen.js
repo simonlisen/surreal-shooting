@@ -14,6 +14,7 @@ const SS_HEIGHT    = 812
 export default class StartScreen extends Sprite {
   constructor(ctx) {
     super(SS_IMG_SRC, SS_WIDTH, SS_HEIGHT)
+    //sleep(3000)
     this.render(ctx)
   }
 
@@ -31,6 +32,7 @@ export default class StartScreen extends Sprite {
    * 第二张补全除了top高度之外的部分，其余的隐藏在屏幕下面
    */
   render(ctx) {
+   // debugger;
     ctx.drawImage(
       this.img,
       0,
@@ -42,7 +44,7 @@ export default class StartScreen extends Sprite {
       screenWidth,
       screenHeight
     )
-
+    //debugger;
     // ctx.drawImage(
     //   this.img,
     //   0,

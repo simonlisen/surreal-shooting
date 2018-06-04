@@ -124,7 +124,7 @@ export default class Player extends Sprite {
     databus.bullets.push(bullet)   
   }
 
-  shootSpread(level){
+  shootSpread(level = 0){
     let bullet = databus.pool.getItemByClass('bullet', Bullet)
 
     bullet.init(
@@ -136,7 +136,7 @@ export default class Player extends Sprite {
     databus.bullets.push(bullet)   
 
     // //if level 1, push 2 side bullets
-    if(level >= 1){
+    if(level >= 0){
       let bullet_1 = databus.pool.getItemByClass('bullet', Bullet)
       bullet_1.init(
         this.x + this.width / 2 - bullet.width / 2,
@@ -157,7 +157,7 @@ export default class Player extends Sprite {
     }
 
     // //if level 2, push 2 more side bullets
-    if (level >= 2) {
+    if (level >= 1) {
       let bullet_3 = databus.pool.getItemByClass('bullet', Bullet)
       bullet_3.init(
         this.x + this.width / 2 - bullet.width / 2,

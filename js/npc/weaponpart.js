@@ -1,7 +1,7 @@
 import Animation from '../base/animation'
 import DataBus from '../databus'
 
-const TROPHY_IMG_SRC = 'images/trophy_1.png'//'images/enemy.png'
+const TROPHY_IMG_SRC = 'images/trophy_2.png'//'images/enemy.png'
 const TROPHY_WIDTH = 30
 const TROPHY_HEIGHT = 30
 
@@ -51,6 +51,6 @@ export default class WeaponPart extends Animation {
 
     // 对象回收
     if (this.y > window.innerHeight + this.height)
-      databus.removeTrophy(this)
+      databus.removeWeaponPart(this)
   }
 }
